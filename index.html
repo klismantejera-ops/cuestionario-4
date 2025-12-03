@@ -1,324 +1,354 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cuestionario Hardware y Redes</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0; padding: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    align-items: center;
-  }
-  .container {
-    background: white;
-    max-width: 600px;
-    width: 90%;
-    margin: 20px;
-    padding: 25px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
-  }
-  h1, h2 {
-    text-align: center;
-    color: #333;
-  }
-  #start-btn, #next-btn {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    width: 100%;
-  }
-  #start-btn:disabled {
-    background-color: gray;
-    cursor: not-allowed;
-  }
-  #question-container {
-    margin-top: 20px;
-  }
-  .question {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
-  .answers {
-    display: flex;
-    flex-direction: column;
-  }
-  .answer-btn {
-    background-color: #e7e7e7;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: left;
-    font-size: 1rem;
-  }
-  .answer-btn:hover {
-    background-color: #d6d6d6;
-  }
-  .selected {
-    background-color: #b0d4ff;
-  }
-  @media (max-width: 480px) {
-    .container {
-      padding: 15px;
-    }
-    .question {
-      font-size: 1rem;
-    }
-    #start-btn, #next-btn {
-      font-size: 0.9rem;
-      padding: 10px;
-    }
-  }
-  #result-container {
-    margin-top: 20px;
-  }
-  .correct {
-    color: green;
-  }
-  .incorrect {
-    color: red;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪐 Quiz Espacial AGN - Archivo General de la Nación</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c0c2f 0%, #1a0033 25%, #0f0f4f 50%, #2d004f 75%, #1a1a5f 100%);
+            background-attachment: fixed;
+            color: #e0e0ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120,219,255,0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-align: center;
+            margin: 2rem 0;
+            background: linear-gradient(45deg, #00f5ff, #ff00ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px #00f5ff); }
+            to { filter: drop-shadow(0 0 30px #ff00ff); }
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .player-name {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .player-name input {
+            background: rgba(20, 20, 60, 0.8);
+            border: 2px solid #00f5ff;
+            border-radius: 15px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            color: #e0e0ff;
+            width: 250px;
+            text-align: center;
+        }
+        
+        .question {
+            background: rgba(20, 20, 60, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 245, 255, 0.3);
+        }
+        
+        .question h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            color: #00f5ff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .options label {
+            display: block;
+            margin: 0.8rem 0;
+            padding: 1rem;
+            background: rgba(0, 50, 100, 0.5);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .options label:hover {
+            background: rgba(0, 245, 255, 0.1);
+            border-color: #00f5ff;
+            transform: scale(1.02);
+        }
+        
+        .options input[type="radio"]:checked + label {
+            background: linear-gradient(45deg, #00f5ff, #ff00ff);
+            color: #0c0c2f;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff00ff, #00f5ff);
+            color: #0c0c2f;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 245, 255, 0.6);
+        }
+        
+        #result {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(0, 100, 200, 0.3);
+            border-radius: 20px;
+            border: 3px solid #00f5ff;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .perfect { background: linear-gradient(45deg, #00ff88, #00f5ff) !important; color: #0c0c2f !important; }
+        .good { background: linear-gradient(45deg, #ffaa00, #ff6600) !important; }
+        .try { background: linear-gradient(45deg, #ff4444, #ff6666) !important; }
+        
+        .answers-section {
+            margin-top: 2rem;
+        }
+        
+        .correct-answer {
+            background: linear-gradient(45deg, #00ff88, #00f5ff) !important;
+            color: #0c0c2f !important;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .question { padding: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <h1>Cuestionario Hardware y Redes</h1>
-  <label for="student-name">Nombre del estudiante:</label>
-  <input type="text" id="student-name" placeholder="Escribe tu nombre" />
-  <button id="start-btn" disabled>Iniciar cuestionario</button>
+    <div class="stars" id="stars"></div>
+    
+    <h1>🚀 QUIZ ESPACIAL AGN</h1>
+    <div class="container">
+        <div class="player-name">
+            <input type="text" id="playerName" placeholder="Escribe tu nombre, astronauta 🚀" maxlength="20">
+        </div>
+        
+        <form id="quizForm">
+            <div class="question">
+                <h3>1. ¿Qué misión tiene el Archivo General?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="a"> 📚 Ser una biblioteca normal</label>
+                    <label><input type="radio" name="q1" value="b"> 🛡️ Custodiar documentos históricos</label>
+                    <label><input type="radio" name="q1" value="c"> 🎨 Mostrar pinturas antiguas</label>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>2. ¿Desde cuándo guarda documentos el AGN?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="a"> 🔢 Solo siglo XXI</label>
+                    <label><input type="radio" name="q2" value="b"> ⏳ Época colonial hasta hoy</label>
+                    <label><input type="radio" name="q2" value="c"> 📱 Solo digitales</label>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>3. ¿Para qué sirve DataViva? 🌌</h3>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="a"> 🔍 Buscar documentos digitalizados</label>
+                    <label><input type="radio" name="q3" value="b"> 🎮 Jugar videojuegos</label>
+                    <label><input type="radio" name="q3" value="c"> 📱 Chatear con amigos</label>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>4. ¿Dónde accedes a DataViva?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="a"> 🌐 Web del AGN</label>
+                    <label><input type="radio" name="q4" value="b"> 🏢 Solo presencial</label>
+                    <label><input type="radio" name="q4" value="c"> 📱 Solo app móvil</label>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>5. ¿Qué encuentras en el AGN?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="a"> 📜 Historia de Colombia para investigar</label>
+                    <label><input type="radio" name="q5" value="b"> 🎉 Fiestas diarias</label>
+                    <label><input type="radio" name="q5" value="c"> 🖼️ Solo fotos bonitas</label>
+                </div>
+            </div>
+            
+            <button type="button" onclick="checkAnswers()">🚀 ENVIAR RESPUESTAS AL ESPACIO</button>
+        </form>
+        <div id="result"></div>
+        <div id="answersSection" class="answers-section" style="display: none;"></div>
+    </div>
 
-  <div id="question-container" class="hide">
-    <div id="question" class="question"></div>
-    <div id="answers" class="answers"></div>
-    <button id="next-btn" disabled>Siguiente</button>
-  </div>
+    <script>
+        // Crear estrellas animadas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
 
-  <div id="result-container" class="hide">
-    <h2>Resultados</h2>
-    <div id="score"></div>
-    <div id="details"></div>
-  </div>
-</div>
-
-<script>
-  const startBtn = document.getElementById('start-btn');
-  const nextBtn = document.getElementById('next-btn');
-  const questionContainer = document.getElementById('question-container');
-  const questionElem = document.getElementById('question');
-  const answersElem = document.getElementById('answers');
-  const studentNameInput = document.getElementById('student-name');
-  const resultContainer = document.getElementById('result-container');
-  const scoreElem = document.getElementById('score');
-  const detailsElem = document.getElementById('details');
-
-  // Banco de preguntas (al menos 5 preguntas)
-  const questionBank = [
-    {
-      question: "¿Qué componente es el cerebro de un computador?",
-      answers: [
-        { text: "Disco duro", correct: false },
-        { text: "Memoria RAM", correct: false },
-        { text: "CPU (Procesador)", correct: true },
-        { text: "Tarjeta de video", correct: false }
-      ]
-    },
-    {
-      question: "¿Cuál es la función principal de un switch en redes?",
-      answers: [
-        { text: "Conectar dispositivos dentro de una misma red local", correct: true },
-        { text: "Enrutamiento entre diferentes redes", correct: false },
-        { text: "Proveer direcciones IP", correct: false },
-        { text: "Controlar el acceso a Internet", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué es una dirección IP?",
-      answers: [
-        { text: "Un identificador único para un dispositivo en una red", correct: true },
-        { text: "Un tipo de hardware de red", correct: false },
-        { text: "Un protocolo de seguridad", correct: false },
-        { text: "Un cable de datos", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué tipo de cableado se usa comúnmente para redes LAN?",
-      answers: [
-        { text: "Cable coaxial", correct: false },
-        { text: "Cable UTP (par trenzado)", correct: true },
-        { text: "Cable HDMI", correct: false },
-        { text: "Cable USB", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué significa la sigla RAM en computación?",
-      answers: [
-        { text: "Memoria de acceso aleatorio", correct: true },
-        { text: "Memoria de acceso rápido", correct: false },
-        { text: "Memoria de almacenamiento", correct: false },
-        { text: "Memoria de solo lectura", correct: false }
-      ]
-    },
-    // Preguntas adicionales para sumar mínimo 10
-    {
-      question: "¿Qué es un firewall en redes?",
-      answers: [
-        { text: "Un dispositivo que protege la red controlando el tráfico", correct: true },
-        { text: "Un tipo de software de edición", correct: false },
-        { text: "Un componente hardware para procesar datos", correct: false },
-        { text: "Un cable para redes inalámbricas", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué puerto se utiliza comúnmente para conexiones HTTP?",
-      answers: [
-        { text: "Puerto 80", correct: true },
-        { text: "Puerto 21", correct: false },
-        { text: "Puerto 443", correct: false },
-        { text: "Puerto 22", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué tecnología permite conexiones inalámbricas en redes locales?",
-      answers: [
-        { text: "Wi-Fi", correct: true },
-        { text: "Bluetooth", correct: false },
-        { text: "Ethernet", correct: false },
-        { text: "USB", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué hace un router en una red?",
-      answers: [
-        { text: "Envía paquetes entre diferentes redes", correct: true },
-        { text: "Almacena datos", correct: false },
-        { text: "Proporciona electricidad", correct: false },
-        { text: "Crea páginas web", correct: false }
-      ]
-    },
-    {
-      question: "¿Qué es un sistema operativo?",
-      answers: [
-        { text: "Un software que administra los recursos de hardware y software", correct: true },
-        { text: "Un tipo de hardware", correct: false },
-        { text: "Una red de computadoras", correct: false },
-        { text: "Un programa para crear gráficos", correct: false }
-      ]
-    }
-  ];
-
-  let shuffledQuestions = [];
-  let currentQuestionIndex = 0;
-  let score = 0;
-  let selectedAnswers = [];
-
-  // Habilitar botón iniciar solo si hay nombre
-  studentNameInput.addEventListener('input', () => {
-    startBtn.disabled = studentNameInput.value.trim() === "";
-  });
-
-  startBtn.addEventListener('click', () => {
-    score = 0;
-    selectedAnswers = [];
-    currentQuestionIndex = 0;
-    resultContainer.classList.add('hide');
-    questionContainer.classList.remove('hide');
-    startBtn.classList.add('hide');
-    studentNameInput.disabled = true;
-
-    // Mezclar preguntas y seleccionar 10
-    shuffledQuestions = [...questionBank].sort(() => Math.random() - 0.5).slice(0, 10);
-
-    showQuestion();
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if(currentQuestionIndex < shuffledQuestions.length - 1) {
-      currentQuestionIndex++;
-      showQuestion();
-    } else {
-      showResults();
-    }
-  });
-
-  function showQuestion() {
-    resetState();
-    let question = shuffledQuestions[currentQuestionIndex];
-    questionElem.textContent = question.question;
-
-    question.answers.forEach((answer, index) => {
-      const button = document.createElement('button');
-      button.classList.add('answer-btn');
-      button.textContent = answer.text;
-      button.dataset.correct = answer.correct;
-      button.addEventListener('click', selectAnswer);
-      answersElem.appendChild(button);
-    });
-  }
-
-  function resetState() {
-    nextBtn.disabled = true;
-    while (answersElem.firstChild) {
-      answersElem.removeChild(answersElem.firstChild);
-    }
-  }
-
-  function selectAnswer(e) {
-    const selectedBtn = e.target;
-    const correct = selectedBtn.dataset.correct === "true";
-    selectedAnswers[currentQuestionIndex] = correct;
-    if(correct) score++;
-
-    // Resaltar selección
-    Array.from(answersElem.children).forEach(button => {
-      button.classList.remove('selected');
-      button.disabled = true;
-      // Mostrar correcto o incorrecto
-      if(button.dataset.correct === "true") {
-        button.style.borderColor = "green";
-      }
-      if(button === selectedBtn && !correct) {
-        button.style.borderColor = "red";
-      }
-    });
-
-    selectedBtn.classList.add('selected');
-
-    nextBtn.disabled = false;
-  }
-
-  function showResults() {
-    questionContainer.classList.add('hide');
-    resultContainer.classList.remove('hide');
-
-    scoreElem.innerHTML = `<p>${studentNameInput.value}, obtuviste ${score} de ${shuffledQuestions.length} respuestas correctas.</p>`;
-    detailsElem.innerHTML = "<h3>Detalle de respuestas:</h3><ul>";
-
-    shuffledQuestions.forEach((q, i) => {
-      const status = selectedAnswers[i] ? `<span class="correct">Correcto</span>` : `<span class="incorrect">Incorrecto</span>`;
-      detailsElem.innerHTML += `<li><strong>Pregunta:</strong> ${q.question} — ${status}</li>`;
-    });
-    detailsElem.innerHTML += "</ul>";
-
-    // Permitir reiniciar el cuestionario
-    startBtn.textContent = "Reiniciar cuestionario";
-    startBtn.disabled = false;
-    startBtn.classList.remove('hide');
-    studentNameInput.disabled = false;
-    studentNameInput.value = "";
-    nextBtn.disabled = true;
-  }
-</script>
+        function checkAnswers() {
+            const playerName = document.getElementById('playerName').value || 'Astronauta Anónimo';
+            const answers = { q1: 'b', q2: 'b', q3: 'a', q4: 'a', q5: 'a' };
+            let score = 0;
+            const correctAnswers = [];
+            
+            for (const key in answers) {
+                const selected = document.querySelector(`input[name="${key}"]:checked`);
+                if (selected && selected.value === answers[key]) {
+                    score++;
+                    correctAnswers.push(key);
+                }
+            }
+            
+            const result = document.getElementById('result');
+            const answersSection = document.getElementById('answersSection');
+            
+            let message = '', className = '';
+            if (score === 5) {
+                message = `🎉 ¡PERFECTO ${playerName}! Eres un GENIO del AGN 🚀✨`;
+                className = 'perfect';
+            } else if (score >= 3) {
+                message = `🌟 ¡Excelente ${playerName}! ${score}/5 - ¡Sigue brillando! 🌌`;
+                className = 'good';
+            } else {
+                message = `💫 ¡Buen intento ${playerName}! ${score}/5 - ¡Practica más! 🔭`;
+                className = 'try';
+            }
+            
+            result.textContent = message;
+            result.className = className;
+            
+            // Mostrar respuestas correctas
+            showCorrectAnswers(correctAnswers, answers);
+            answersSection.style.display = 'block';
+        }
+        
+        function showCorrectAnswers(correct, answers) {
+            const answersSection = document.getElementById('answersSection');
+            let html = '<h3 style="color: #00f5ff; text-align: center; margin-bottom: 1rem;">✅ RESPUESTAS CORRECTAS:</h3>';
+            
+            for (let i = 1; i <= 5; i++) {
+                const qKey = `q${i}`;
+                const isCorrect = correct.includes(qKey);
+                const correctLabel = document.querySelector(`input[name="${qKey}"][value="${answers[qKey]}"]`).nextElementSibling.textContent;
+                
+                html += `
+                    <div class="question" style="margin-bottom: 1rem;">
+                        <h3>Pregunta ${i}</h3>
+                        <div style="color: ${isCorrect ? '#00ff88' : '#ff4444'}; font-weight: bold;">
+                            ${isCorrect ? '✅' : '❌'} Respuesta correcta: ${correctLabel}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            answersSection.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
